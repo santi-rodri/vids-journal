@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block middle %}
+
+<p><br>
+<form method="post" action="{{ url_for('search') }}">
+  <label for="category">Category:</label>
+  <input type="text" name="category">
+  <input type="submit" value="Search">
+</form>
+<p><hr>
+
+{{ result }}
+
+<p>
+
+{% for video in videos %}
+<h2>{{ video.category }}</h2>
+<iframe width="360" height="215" src="{{ video.url }}" frameborder="0"></iframe>
+<div style="width:360px;height:215px;border:2px solid black">{{ video.comment }}</div>
+<a href="/delete/{{ video._id }}">Delete</a>
+<a href="/edit/{{ video._id }}">Edit</a><p>
+{% endfor %}
+
+{% endblock %}

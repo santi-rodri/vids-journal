@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block middle %}
+
+  {% for video in videos %}
+    <h3>{{ video.url }}</h3>
+    <li>{{ video.category}}</li>
+    <b>{{ video.rating }}</b>
+    <i>{{ video.comment }}</i><p>
+    <a href="/delete/{{ video._id }}">Delete</a>
+    <a href="/edit/{{ video._id }}">Edit</a>
+    <p><hr>
+  {% endfor %}
+
+{% endblock %}

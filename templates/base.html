@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+  <title>{{ page_title }}</title>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <a href="{{ url_for('home') }}">Add</a>
+      <a href="{{ url_for('videos') }}">Videos</a>
+      <a href="{{ url_for('search') }}">Search</a>
+    </nav>
+  </header>
+
+  {% block middle %}
+  {% endblock %}
+
+</body>
+
+</html>
