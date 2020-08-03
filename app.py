@@ -3,68 +3,83 @@ from flask import Flask, render_template, redirect, request, url_for, session, f
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 
-
 app = Flask(__name__)
-app.config["MONGO_DBNAME"] = 'vid_vault'
-app.config["MONGO_URI"] = "mongodb+srv://root:rootCode99@mycicluster-cecn6.mongodb.net/vid_vault?retryWrites=true&w=majority"
-app.secret_key = "a1b2c3d4e5f6g7"
+
+app.config['MONGO_DBNAME'] = os.environ['MONGO_DBNAME']
+app.config['MONGO_URI'] = os.environ['MONGO_URI']
+app.secret_key = os.environ['secret_key']
 
 mongo = PyMongo(app)
 
 @app.route('/')
 def home():
-    return render_template('index.html')
-
-@app.route('/videos')
-def videos():
     all_videos = mongo.db.videos.find()
-    return render_template('videos.html', videos=all_videos)
+    num_videos = all_videos.count()
+    if num_videos == 0:
+        return render_template('index.html', num_videos=num_videos)
+    return render_template('videos.html', videos=all_videos, num_videos=1)
+
+@app.route('/allvideos')
+def allvideos():
+    all_videos = mongo.db.videos.find()
+    num_videos = all_videos.count()
+
+    return render_template('videos.html', videos=all_videos, num_videos=num_videos)
 
 @app.route('/add',methods=['GET','POST'])
 def add():
-    url = get_youtube_embed_link(request.form['url'])
-    category = request.form['category']
-    comment = request.form['comment']
+    url = get_youtube_embed_link(request.form['url'].strip())
+    category = request.form['category'].strip().replace(" ","")
+    comment = request.form['comment'].strip()
     rating = request.form['rating']
 
-    new_video = {'url': url, 'category': category, 'comment': comment, 'rating': rating}
-    mongo.db.videos.insert(new_video)
+    video_unique_verification = mongo.db.videos.find({'url': url})
+    verification_result = video_unique_verification.count()
+    if verification_result == 0:
+        new_video = {'url': url, 'category': category, 'comment': comment, 'rating': rating}
+        mongo.db.videos.insert(new_video)
 
-    flash('Video added(!)')
-    return redirect(url_for('home'))
+        videos = mongo.db.videos.find()
+        num_videos = videos.count()
+        video_just_added = videos[num_videos-1]
+        id = video_just_added['_id']
+        video = mongo.db.videos.find({'_id': ObjectId(id)})
+        return render_template('videos.html', videos=video, num_videos=1)
+    else:
+        flash("This video already existed","video_already_exists")
+        return render_template('videos.html', videos=video_unique_verification, num_videos=1)
 
-@app.route('/search', methods=['GET','POST'])
-def search():
+@app.route('/search_by_category', methods=['GET','POST'])
+def search_by_category():
     videos = []
-    result = ""
     if request.method=='POST':
-        category = request.form['category']
-        videos = mongo.db.videos.find({'category': category.lower()})
-        if videos.count() == 0:
-            result = 'No videos found(!)'
-
-    return render_template('search.html', videos=videos, result=result)
+        category = request.form['category'].strip()
+        videos_on_category = mongo.db.videos.find({'category': category.lower()})
+        num_videos_on_category = videos_on_category.count()
+        if num_videos_on_category != 0:
+            return render_template('videos.html', videos=videos_on_category, num_videos=num_videos_on_category)
+        else:
+            flash_message = "No videos found for category " + category.upper()
+            flash(flash_message,"category_not_found")
+            videos = mongo.db.videos.find();
+            return render_template('videos.html', videos=videos, num_videos=1)
 
 @app.route('/delete/<id>')
 def delete(id):
     mongo.db.videos.remove({'_id': ObjectId(id)})
-    flash("Video deleted")
+    flash("Video successfully deleted (!)","video_deleted")
     return redirect(url_for('home'))
-
-@app.route('/edit/<id>')
-def edit(id):
-    video = mongo.db.videos.find_one({'_id': ObjectId(id)})
-    return render_template('edit.html', video=video)
 
 @app.route('/update/<id>', methods=['GET','POST'])
 def update(id):
-    category = request.form['category']
-    comment = request.form['comment']
+    category = request.form['category'].strip().replace(" ","")
+    comment = request.form['comment'].strip()
     rating = request.form['rating']
 
     mongo.db.videos.update_one({'_id': ObjectId(id)},{'$set': {'category': category,'comment': comment,'rating': rating}})
-    flash('Video info updated(!)')
-    return redirect(url_for('home'))
+    flash("Successfully updated","video_updated")
+    video = mongo.db.videos.find({'_id': ObjectId(id)})
+    return render_template('videos.html', videos=video, num_videos=1)
 
 def get_youtube_embed_link(youtube_link):
     return youtube_link[:23] + '/embed/' + youtube_link[32:]

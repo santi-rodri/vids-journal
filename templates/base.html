@@ -3,22 +3,93 @@
 
 <head>
   <meta charset="utf-8">
-  <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
-  <title>{{ page_title }}</title>
+  <title>Video Journal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </head>
 
 <body>
-  <header>
-    <nav>
-      <a href="{{ url_for('home') }}">Add</a>
-      <a href="{{ url_for('videos') }}">Videos</a>
-      <a href="{{ url_for('search') }}">Search</a>
-    </nav>
-  </header>
-
-  {% block middle %}
-  {% endblock %}
-
+  <div class="row">
+    <div class="col s12 m12 l4">
+      <div class="row">
+        <div class="col s12 m10 offset-m2" style="margin-top:15vh">
+          <form name="addVideoForm" method="POST" action="{{ url_for('add') }}" onsubmit="return validateAddVideoForm()">
+            <div class="input-field form-field">
+              <input id="url" name="url" type="text">
+              <label for="url">Copy and paste a youtube video link here</label>
+              <span id="url-error" class="form-error">Please enter a Youtube link</span>
+              <span id="youtube-error" class="form-error">This is not a correct Youtube link</span>
+            </div>
+            <div class="input-field form-field">
+              <input id="category_add" name="category" type="text" maxlength="30" data-length="30">
+              <label for="category_add">Assign a category</label>
+              <span id="category-error" class="form-error">Please enter a category</span>
+              <span id="category-whitespace-error" class="form-error">Only one word is allowed</span>
+            </div>
+            <div class="input-field form-field">
+              <textarea id="comment" name="comment" class="materialize-textarea" maxlength="500" data-length="500"></textarea>
+              <label for="comment">Add any comments here</label>
+            </div>
+            <div class="input-field rating-main">
+              <select id="rating" name="rating">
+                <option value="" disabled selected>Rating</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+              <span id="rating-error" class="form-error">Please choose a rating</span>
+            </div>
+            <div class="input-field form-field">
+              <input type="submit" class="btn-small btn-add" value="Add Video">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 m12 l8">
+      <div class="row">
+        <div class="col s12 m2 offset-m1">
+          <a href="{{ url_for('allvideos') }}" class="btn-small btn-add" style="margin-top:20px">All Videos</a>
+        </div>
+        <div class="col s12 m4 offset-m3">
+          <form name="searchForm" method="POST" action="{{ url_for('search_by_category') }}" onsubmit="return validateSearchVideoForm()">
+            <div class="input-field" style="margin-top:10px">
+              <i class="material-icons prefix">search</i>
+              <input id="category_search" name="category" type="text" maxlength="30" data-length="30">
+              <label for="category_search">Search by category</label>
+              <span id="search-error" class="form-error" style="margin-left:47px">Please enter a category</span>
+            </div>
+        </div>
+        <div class="col s12 m1" style="padding-left: 0; margin-top: 25px;">
+          <input type="submit" class="btn-small btn-add" value="Go">
+          </form>
+        </div>
+      </div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category,message in messages %}
+      {% if category == "video_deleted" %}
+      <div class="center-align delete-message">
+        <span style="color:red">{{ message }}</span>
+      </div>
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+      <div class="col s12 m12">
+        {% block content %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+  <script src="/static/js/initialize_form.js"></script>
 </body>
 
 </html>

@@ -1,35 +1,12 @@
 {% extends "base.html" %}
 
-{% block middle %}
+{% block content %}
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-{% for message in messages %}
-<span style="color:red"><b>{{ message }}</b></span>
-{% endfor %}
+{% if num_videos == 0 %}
+<div class="center-align empty-vault-message">
+  <p>Your video vault is currently empty.<br>
+    Use the panel on the left to upload <b>Youtube videos</b> to your personal video organizer</p>
+</div>
 {% endif %}
-{% endwith %}
-
-<p><br>
-<form method="post" action="{{ url_for('add') }}">
-  <label for="url">Url:</label>
-  <input type="text" name="url">
-  <p>
-    <label for="category">Category:</label>
-    <input type="text" name="category">
-  <p>
-    <label for="comment"></label>
-    <textarea name="comment" rows="8" cols="50"></textarea>
-  <p>
-    <label for="rating"></label>
-    <select name="rating">
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-    </select>
-    <input type="submit" value="Add video" style="background-color:blue;color:white;border-radius:10%">
-</form>
 
 {% endblock %}

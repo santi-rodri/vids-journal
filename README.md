@@ -1,39 +1,68 @@
-<img src="https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png" style="margin: 0;">
+# YOUTUBE VIDEO-JOURNAL
 
-Welcome santi-rodri,
+The Youtube Video-Journal is a web app that let users store their **favourite youtube videos** in a personal video-journal.
+Videos can be organized by **category** and **rating**.
 
-This is the Code Institute student template for Gitpod. We have preinstalled all of the tools you need to get started. You can safely delete this README.md file, or change it for your own project.
+## UX
 
-## Gitpod Reminders
+This web app has been designed with a **mobile-first** approach in mind, as most people nowadays access the Internet by using their smart phones.
 
-To run a frontend (HTML, CSS, Javascript only) application in Gitpod, in the terminal, type:
+Special attention has been paid to make the app **responsive** to different screen sizes so the content can be viewed in a clear and well structured way.
 
-`python3 -m http.server`
+## Features
 
-A blue button should appear to click: *Make Public*,
+The web app has been divided into 2 different areas, resulting in 2 vertical panels:
 
-Another blue button should appear to click: *Open Browser*.
+### Left Panel:
++ Video-Form with 4 main fields:
+1. **Youtube Video URL**: here the user must copy and paste the youtube link they wish.
+A field validator is in place to make sure the link has the right format.
 
-To run a backend Python file, type `python3 app.py`, if your Python file is named `app.py` of course.
+2. **Category**: a category must be assigned to each video, so they can be easily found later.
 
-A blue button should appear to click: *Make Public*,
+3. **Comment**: the user may add any comments to the video up to 500 characters long.
 
-Another blue button should appear to click: *Open Browser*.
+4. **Rating**: a rating from 1 to 5 must be chosen for each video.
 
-In Gitpod you have superuser security privileges by default. Therefore you do not need to use the `sudo` (superuser do) command in the bash terminal in any of the backend lessons.
+### Right Panel:
++ Upper area:
+Left: An "**All Videos**" button let us retrieve all the videos we have stored in our video-journal.
+Right: A **category search** option is provided so we can quickly retrieve our videos by category.
 
-## Updates Since The Instructional Video
++ Main area:
+This is where videos are displayed.
+**Update** and **Delete** options are provided in case the user would like to modify the category, comments or rating.
+  
+## Technologies used
+ 
+ - **HTML5** : Page structure
+ 
+ - **CSS3** : Styling
+ 
+ - **Materialize** : Responsiveness and form styling
 
-We continually tweak and adjust this template to help give you the best experience. Here are the updates since the original video was made:
+ - **Python**, **Flask** framework and **Jinja2** : Backend operations
 
-**April 16 2020:** The template now automatically installs MySQL instead of relying on the Gitpod MySQL image. The message about a Python linter not being installed has been dealt with, and the set-up files are now hidden in the Gitpod file explorer.
+ - **Mongodb** : Document based database system
+ 
+ - **Javascript** : Form validation
+ 
+ - **jQuery** : Frontend effects
 
-**April 13 2020:** Added the _Prettier_ code beautifier extension instead of the code formatter built-in to Gitpod.
 
-**February 2020:** The initialisation files now _do not_ auto-delete. They will remain in your project. You can safely ignore them. They just make sure that your workspace is configured correctly each time you open it. It will also prevent the Gitpod configuration popup from appearing.
+## Testing
 
-**December 2019:** Added Eventyret's Bootstrap 4 extension. Type `!bscdn` in a HTML file to add the Bootstrap boilerplate. Check out the <a href="https://github.com/Eventyret/vscode-bcdn" target="_blank">README.md file at the official repo</a> for more options.
+- The website has been tested for **reponsiveness** for all different screen sizes, using the Google Chrome built-in Inspector tool.
 
---------
+- Tests were carried out for **form validation**.
 
-Happy coding!
+
+## Deployment
+
+The entire project has been uploaded to **Github**, and then, making use of the **GitPod** interface, it was deployed to **Heroku**, making sure that the mongodb database credentials are securely stored as config variables on Heroku.
+
+## Media
+
+ - **Videos**: all the videos stored in the personal video-journal are freely available youtube videos.
+
+

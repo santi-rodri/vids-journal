@@ -1,0 +1,51 @@
+body {
+  background-color: #ffffff;
+  margin-top: 15px;
+}
+.form-field {
+  margin: 10% 10% 10% 1%;
+  //border: 1px solid orange;
+}
+.edit {
+  margin: 20px 30% 20px 0px;
+}
+.rating {
+  margin: 20px 75% 20px 20px;
+}
+.rating-main {
+  margin: 1% 70% 15% 1%;
+}
+.btn-add {
+  margin-right: 10px;
+  color: white;
+  font-weight: bold;
+  background-color: #01575c;
+}
+.btn-delete {
+  color: white;
+  font-weight: bold;
+  background-color: #b30404;
+}
+.btn-delete:hover{
+  background-color: red;
+}
+.btn-update {
+  margin: 20px 1px 20px 1px;
+}
+.delete-message {
+  padding-left: 100px;
+  padding-right: 100px;
+  font-size: 30px;
+  font-weight: bold;
+}
+.empty-vault-message {
+  padding-top: 100px;
+  padding-left: 100px;
+  padding-right: 100px;
+  font-size: 30px;
+  font-weight: bold;
+}
+.form-error {
+  display: none;
+  color: red;
+}

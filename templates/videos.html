@@ -1,15 +1,109 @@
 {% extends "base.html" %}
 
-{% block middle %}
+{% block content %}
 
-  {% for video in videos %}
-    <h3>{{ video.url }}</h3>
-    <li>{{ video.category}}</li>
-    <b>{{ video.rating }}</b>
-    <i>{{ video.comment }}</i><p>
-    <a href="/delete/{{ video._id }}">Delete</a>
-    <a href="/edit/{{ video._id }}">Edit</a>
-    <p><hr>
-  {% endfor %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category,message in messages %}
+{% if category == "category_not_found" %}
+<div class="center-align flash-message">
+  <span style="color:red">{{ message }}</span>
+</div>
+{% endif %}
+{% if category == "empty_vault" %}
+<div class="center-align empty-vault-message">
+  <p>Your video vault is currently empty.<br>
+    Use the panel on the left to upload <b>Youtube videos</b> to your personal video organizer</p>
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+{% set cap = num_videos %}
+
+<div class="row">
+  <div class="col s12 m10 offset-m1">
+    <script>
+      for (let i = 0; i < {{ cap }}; i++) {
+        let page = i + 1;
+        document.write("<button id='" + i + "' class='vid-number' style='background-color: #571405;color:white'><b>" + page + "</b></button>");
+      }
+      $('#0').css("background-color", "#d15106")
+    </script>
+  </div>
+</div>
+
+<script>
+  $('.vid-number').click(function(e) {
+    let vid_to_be_shown = "#v" + e.currentTarget.id;
+    let clicked_button = "#" + e.currentTarget.id;
+    $('.vid').css("display", "none");
+    $(vid_to_be_shown).css("display", "block");
+    $('.vid-number').css("background-color", "#571405")
+    $(clicked_button).css("background-color", "#d15106");
+  });
+</script>
+
+{% for v in range(0,cap) %}
+<div id="v{{ v }}" class="vid">
+  <script>
+    if ({{ v }} != 0) {
+      let indice = '#v' + {{ v }};
+      $(indice).css("display", "none");
+    }
+  </script>
+  <div class="row">
+    <div class="col s12 m10 offset-m1">
+      <iframe width="100%" height="400px" src="{{ videos[v].url }}" frameborder="0"></iframe>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col s12 m4 offset-m1">
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category,message in messages %}
+      {% if category == "video_updated" or category == "video_already_exists" %}
+      <div class="input-field edit" style="margin-left:0">
+        <span style="font-weight:bold;color:red">{{ message }}</span>
+      </div>
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+
+      <form name="updateForm" method="post" action="/update/{{ videos[v]._id }}">
+        <div class="input-field edit" style="margin-left:0">
+          <input id="category_edit" type="text" name="category" value="{{ videos[v].category }}" maxlength="30" data-length="30">
+          <label for="category_edit">Category</label>
+        </div>
+        <div class="input-field rating" style="margin-left:0">
+          Rating
+          <select name="rating">
+            <option value="1" {% if videos[v].rating == '1' %} selected {% endif %}>1</option>
+            <option value="2" {% if videos[v].rating == '2' %} selected {% endif %}>2</option>
+            <option value="3" {% if videos[v].rating == '3' %} selected {% endif %}>3</option>
+            <option value="4" {% if videos[v].rating == '4' %} selected {% endif %}>4</option>
+            <option value="5" {% if videos[v].rating == '5' %} selected {% endif %}>5</option>
+          </select>
+        </div>
+        <div class="input-field btn-update">
+          <input type="submit" class="btn-small btn-add" value="Update">
+          <a id="delete" class="btn-small btn-delete" href="/delete/{{videos[v]._id}}">Delete</a>
+        </div>
+    </div>
+    <div class="col s12 m6">
+      <div class="input-field">
+        <textarea id="comment_edit" name="comment" class="materialize-textarea" maxlength="500" data-length="500">{{ videos[v].comment }}</textarea>
+        <label for="comment_edit">Your comments here</label>
+      </div>
+    </div>
+    </form>
+  </div>
+</div>
+
+{% endfor %}
 
 {% endblock %}
